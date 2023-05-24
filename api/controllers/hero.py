@@ -12,20 +12,17 @@ class HeroController:
         self.db = db
 
     def heroes_list(self):
+        if request.args.get('name'):
+            name = request.args.get('name')
+            heroes = Hero.query \
+                .filter(Hero.name.contains(name))
+            if heroes:
+                return heroes_schema.dump(heroes)
         heroes = Hero.query.all()
         return heroes_schema.dump(heroes)
 
     def hero_detail(self, hero_id: int):
         hero = Hero.query.get(hero_id)
-        if hero:
-            return hero_schema.dump(hero)
-        abort(404)
-
-    def search_hero(self):
-        name = request.args.get('name')
-        hero = Hero.query\
-            .filter(Hero.name.contains(name))\
-            .first()
         if hero:
             return hero_schema.dump(hero)
         abort(404)

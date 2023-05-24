@@ -12,6 +12,12 @@ paths:
       operationId: "api.controllers.hero.HeroController.heroes_list"
       summary: Возвращает список всех героев.
       description: Возвращает список всех героев.
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+          required: false
       responses:
         '200':
           description: "Успешно"
@@ -19,7 +25,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Hero'
-  /hero/{hero_id}:
+    post:
+      operationId: "api.controllers.hero.HeroController.create_hero"
+      summary: "Создать нового героя"
+      description: "Создает героя"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Hero'
+      responses:
+        '200':
+          description: 'Успешно'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hero'
+
+  /heroes/{hero_id}:
     get:
       operationId: "api.controllers.hero.HeroController.hero_detail"
       summary: "Возвращает информацию о конкретном герое."
@@ -101,50 +125,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Success'
-        '404':
-          description: 'Герой не найден'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFound'
-
-  /hero/create:
-    post:
-      operationId: "api.controllers.hero.HeroController.create_hero"
-      summary: "Создать нового героя"
-      description: "Создает героя"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Hero'
-      responses:
-        '200':
-          description: 'Успешно'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Hero'
-
-  /hero/search:
-    get:
-      operationId: "api.controllers.hero.HeroController.search_hero"
-      summary: 'Поиск героя по HeroId'
-      description: 'Поиск героя по HeroId'
-      parameters:
-        - name: name
-          in: query
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
-          description: 'Успешно'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Hero'
         '404':
           description: 'Герой не найден'
           content:
