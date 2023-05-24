@@ -1,5 +1,17 @@
-from core import app
-from core import models
+from flask import Flask
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 
-if __name__ == '__main__':
-    app.run(debug=True)
+from api.routes import init_route
+from config import DevConfig
+from api.error_handlers import init_handlers
+
+app = Flask('hero')
+
+app.config.from_object(DevConfig)
+
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+init_route(app, db)
+init_handlers(app)
