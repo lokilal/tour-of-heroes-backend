@@ -41,7 +41,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Hero'
+              type: object
+              properties:
+                name:
+                  type: string
+                ability:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      title:
+                        type: string
       responses:
         '200':
           description: 'Успешно'
@@ -164,10 +174,15 @@ components:
         name:
           type: string
         ability:
-          type: string
+          type: object
+          properties:
+            title:
+              type: string
     Ability:
       type: object
       properties:
+        id:
+          type: integer
         title:
           type: string
     NotFound:
