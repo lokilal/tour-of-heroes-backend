@@ -1,7 +1,7 @@
 from flask import jsonify, abort, request
 
 from api.models.hero import Hero
-from api.schemes.hero import heroes_schema, hero_schema
+from api.schemes.hero import heroes_schema, hero_schema, abilities_schema
 from api.utils import get_or_create
 
 
@@ -12,14 +12,13 @@ class HeroController:
         self.db = db
 
     def heroes_list(self):
-        if request.args.get('name'):
-            name = request.args.get('name')
-            heroes = Hero.query \
-                .filter(Hero.name.contains(name))
-            if heroes:
-                return heroes_schema.dump(heroes)
+        if request.args:
+            heroes = Hero.query
+            for query_param, value in request.args.items():
+                heroes = heroes.filter(getattr(Hero, query_param).contains(value))
+            return {'data': heroes_schema.dump(heroes), 'totalItems':len(heroes.all())}
         heroes = Hero.query.all()
-        return heroes_schema.dump(heroes)
+        return {'data': heroes_schema.dump(heroes), 'totalItems':len(heroes)}
 
     def hero_detail(self, hero_id: int):
         hero = Hero.query.get(hero_id)
@@ -52,3 +51,7 @@ class HeroController:
         hero.name = request.json.get('name', hero.name)
         self.db.session.commit()
         return hero_schema.dump(hero)
+
+    def abilities_list(self):
+         abilities = Hero.query.distinct(Hero.ability)
+         return abilities_schema.dump(abilities)
